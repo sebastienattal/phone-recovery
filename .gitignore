@@ -4,7 +4,9 @@
 /var/cache/*
 /app/config/parameters.yml
 /var/logs/*
+/var/sessions/*
 !var/cache/.gitkeep
 !var/logs/.gitkeep
+!var/sessions/.gitkeep
 /vendor/
 /bin/
