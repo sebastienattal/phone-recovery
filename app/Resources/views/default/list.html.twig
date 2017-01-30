@@ -2,4 +2,30 @@
 
 {% block body %}
     <h1>{{ 'List phone recovery'|trans }}</h1>
+    <button class="btn btn-default" type="button">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        {{ 'Add an order'|trans }}
+    </button>
+    <p>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Model</th>
+                <th>Amount</th>
+                <th>Creation date</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.model }}</td>
+                    <td>{{ order.amount|number_format(2, '.', ',') }}
+                    <td>{{ order.created }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </p>
 {% endblock %}

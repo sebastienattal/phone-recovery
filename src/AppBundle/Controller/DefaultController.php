@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -28,6 +29,17 @@ class DefaultController extends Controller
      */
     public function listAction(Request $request)
     {
-        return $this->render('default/list.html.twig');
+        /** @var JsonResponse $ordersJson */
+        $ordersJson = $this->forward('ApiBundle:Default:listOrders');
+        $ordersContent = $ordersJson->getContent();
+        $orders = json_decode($ordersContent);
+
+        if (null === $orders) {
+            throw new \RuntimeException('Orders data file is bad or corrupted.');
+        }
+
+        return $this->render('default/list.html.twig', [
+            'orders' => $orders
+        ]);
     }
 }

@@ -20,4 +20,16 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $this->assertNotEmpty($response->getContent());
     }
+
+    public function testListAllOrders()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/services/orders');
+
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->headers->get('Content-Type'));
+        $this->assertNotEmpty($response->getContent());
+    }
 }

@@ -9,6 +9,7 @@ imports:
 parameters:
     locale: en
     brandFilePath: "%kernel.root_dir%/../data/brand.json"
+    orderFilePath: "%kernel.root_dir%/../data/order.json"
 
 framework:
     #esi:             ~

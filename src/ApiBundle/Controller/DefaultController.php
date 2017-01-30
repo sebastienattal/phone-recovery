@@ -48,4 +48,41 @@ class DefaultController extends Controller
 
         return new JsonResponse($brands);
     }
+
+    /**
+     * List all orders
+     *
+     * @ApiDoc(
+     *     section="Phone recovery",
+     *     description="List all orders",
+     *     statusCodes={
+     *         Response::HTTP_OK="Returned when orders exists",
+     *         Response::HTTP_BAD_REQUEST="Returned when an error occurred"
+     *     }
+     * )
+     * @Route("/services/orders", name="api_services_list_orders")
+     * @Method("GET")
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function listOrdersAction(Request $request)
+    {
+        $orderFilePath = $this->getParameter('orderfilepath');
+
+        if (!file_exists($orderFilePath)) {
+            $response = ['status' => 'KO', 'message' => 'The order file does not exist'];
+            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        }
+
+        $jsonOrders = file_get_contents($orderFilePath);
+
+        $orders = json_decode($jsonOrders);
+        if (null === $orders) {
+            $response = ['status' => 'KO', 'message' => json_last_error_msg()];
+            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse($orders);
+    }
 }

@@ -10,3 +10,4 @@
 !var/sessions/.gitkeep
 /vendor/
 /bin/
+/data/
