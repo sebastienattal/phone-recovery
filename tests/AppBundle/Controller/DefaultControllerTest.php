@@ -28,6 +28,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $this->assertContains('Id', $crawler->filter('body table tr')->text());
         $this->assertContains('Model', $crawler->filter('body table tr')->text());
+        $this->assertContains('Brand', $crawler->filter('body table tr')->text());
         $this->assertContains('Amount', $crawler->filter('body table tr')->text());
         $this->assertContains('Creation date', $crawler->filter('body table tr')->text());
     }

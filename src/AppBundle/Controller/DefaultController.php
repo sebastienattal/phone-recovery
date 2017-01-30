@@ -40,10 +40,16 @@ class DefaultController extends Controller
 
         foreach ($orders as &$order) {
             /** @var JsonResponse $modelJson */
-            $modelJson = $this->forward('ApiBundle:Default:getModelById', ['modelId' => $order->id]);
+            $modelJson = $this->forward('ApiBundle:Default:getModelById', ['modelId' => $order->model]);
             $modelContent = $modelJson->getContent();
             $model = json_decode($modelContent);
             $order->model = $model->name;
+
+            /** @var JsonResponse $modelJson */
+            $brandJson = $this->forward('ApiBundle:Default:getBrandById', ['brandId' => $model->brand]);
+            $brandContent = $brandJson->getContent();
+            $brand = json_decode($brandContent);
+            $order->brand = $brand->name;
         }
 
         return $this->render('default/list.html.twig', [

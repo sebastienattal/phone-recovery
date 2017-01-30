@@ -130,4 +130,49 @@ class DefaultController extends Controller
         $response = ['status' => 'KO', 'message' => 'The model does not exist'];
         return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
     }
+
+    /**
+     * Retrieve a brand from its id
+     *
+     * @ApiDoc(
+     *     section="Phone recovery",
+     *     description="Retrieve a brand from its id",
+     *     statusCodes={
+     *         Response::HTTP_OK="Returned when the brand exists",
+     *         Response::HTTP_BAD_REQUEST="Returned when an error occurred"
+     *     }
+     * )
+     * @Route("/services/brands/{brandId}", name="api_services_get_brand", requirements={"brandId": "\d+"})
+     * @Method("GET")
+     *
+     * @param Request $request
+     * @param integer $brandId
+     * @return JsonResponse
+     */
+    public function getBrandByIdAction(Request $request, $brandId)
+    {
+        $brandFilePath = $this->getParameter('brandfilepath');
+
+        if (!file_exists($brandFilePath)) {
+            $response = ['status' => 'KO', 'message' => 'The brand file does not exist'];
+            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        }
+
+        $jsonBrands = file_get_contents($brandFilePath);
+
+        $brands = json_decode($jsonBrands);
+        if (null === $brands) {
+            $response = ['status' => 'KO', 'message' => json_last_error_msg()];
+            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        }
+
+        foreach ($brands as $brand) {
+            if ($brandId == $brand->id) {
+                return new JsonResponse($brand);
+            }
+        }
+
+        $response = ['status' => 'KO', 'message' => 'The brand does not exist'];
+        return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+    }
 }
