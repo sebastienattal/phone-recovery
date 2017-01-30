@@ -85,4 +85,49 @@ class DefaultController extends Controller
 
         return new JsonResponse($orders);
     }
+
+    /**
+     * Retrieve a model from its id
+     *
+     * @ApiDoc(
+     *     section="Phone recovery",
+     *     description="Retrieve a model from its id",
+     *     statusCodes={
+     *         Response::HTTP_OK="Returned when the model exists",
+     *         Response::HTTP_BAD_REQUEST="Returned when an error occurred"
+     *     }
+     * )
+     * @Route("/services/models/{modelId}", name="api_services_get_model", requirements={"modelId": "\d+"})
+     * @Method("GET")
+     *
+     * @param Request $request
+     * @param integer $modelId
+     * @return JsonResponse
+     */
+    public function getModelByIdAction(Request $request, $modelId)
+    {
+        $modelFilePath = $this->getParameter('modelfilepath');
+
+        if (!file_exists($modelFilePath)) {
+            $response = ['status' => 'KO', 'message' => 'The model file does not exist'];
+            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        }
+
+        $jsonModels = file_get_contents($modelFilePath);
+
+        $models = json_decode($jsonModels);
+        if (null === $models) {
+            $response = ['status' => 'KO', 'message' => json_last_error_msg()];
+            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        }
+
+        foreach ($models as $model) {
+            if ($modelId == $model->id) {
+                return new JsonResponse($model);
+            }
+        }
+
+        $response = ['status' => 'KO', 'message' => 'The model does not exist'];
+        return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+    }
 }

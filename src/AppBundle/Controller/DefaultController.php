@@ -38,6 +38,14 @@ class DefaultController extends Controller
             throw new \RuntimeException('Orders data file is bad or corrupted.');
         }
 
+        foreach ($orders as &$order) {
+            /** @var JsonResponse $modelJson */
+            $modelJson = $this->forward('ApiBundle:Default:getModelById', ['modelId' => $order->id]);
+            $modelContent = $modelJson->getContent();
+            $model = json_decode($modelContent);
+            $order->model = $model->name;
+        }
+
         return $this->render('default/list.html.twig', [
             'orders' => $orders
         ]);

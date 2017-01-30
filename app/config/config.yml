@@ -10,6 +10,7 @@ parameters:
     locale: en
     brandFilePath: "%kernel.root_dir%/../data/brand.json"
     orderFilePath: "%kernel.root_dir%/../data/order.json"
+    modelFilePath: "%kernel.root_dir%/../data/model.json"
 
 framework:
     #esi:             ~

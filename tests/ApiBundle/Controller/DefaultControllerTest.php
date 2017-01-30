@@ -32,4 +32,26 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals('application/json', $response->headers->get('Content-Type'));
         $this->assertNotEmpty($response->getContent());
     }
+
+    public function testGetModelByIdReturnsGoodResponse()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/services/models/5');
+
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->headers->get('Content-Type'));
+        $this->assertNotEmpty($response->getContent());
+    }
+
+    public function testGetModelByIdReturnsBadResponse()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/services/models/test');
+
+        $response = $client->getResponse();
+        $this->assertEquals(404, $response->getStatusCode());
+    }
 }
