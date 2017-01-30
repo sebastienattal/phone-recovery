@@ -1,3 +1,8 @@
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+
+# Used to generate a doc for REST API (see https://github.com/nelmio/NelmioApiDocBundle)
+api_doc:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /services/doc
