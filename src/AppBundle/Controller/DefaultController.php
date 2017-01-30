@@ -34,7 +34,7 @@ class DefaultController extends Controller
         $ordersContent = $ordersJson->getContent();
         $orders = json_decode($ordersContent);
 
-        if (null === $orders) {
+        if (!is_array($orders) && property_exists($orders, 'status') && 'KO' == $orders->status) {
             throw new \RuntimeException('Orders data file is bad or corrupted.');
         }
 
