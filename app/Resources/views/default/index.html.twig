@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ 'Welcome to Phone recovery!'|trans }}
+    <h1>{{ 'Welcome to Phone recovery!'|trans }}</h1>
+    <p>
+        Go to the <a href="{{ url('list_phone_recovery') }}">main page</a>.
+    </p>
 {% endblock %}

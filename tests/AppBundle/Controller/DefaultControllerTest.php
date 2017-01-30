@@ -16,6 +16,15 @@ class DefaultControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertContains('Welcome to Phone recovery!', $crawler->filter('body > div')->text());
+        $this->assertContains('Welcome to Phone recovery!', $crawler->filter('body h1')->text());
+    }
+
+    public function testListPhoneRecovery()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/list');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 }
