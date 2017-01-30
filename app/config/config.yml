@@ -8,6 +8,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    brandFilePath: "%kernel.root_dir%/../data/brand.json"
 
 framework:
     #esi:             ~
