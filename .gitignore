@@ -10,3 +10,5 @@
 !var/sessions/.gitkeep
 /vendor/
 /bin/
+/web/coverage/*
+!web/coverage/.gitkeep
