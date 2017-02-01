@@ -31,21 +31,11 @@ class DefaultController extends Controller
      */
     public function listBrandsAction(Request $request)
     {
-        $brandFilePath = $this->getParameter('brandfilepath');
+        $brands = $this->get('json_parser')->decode($this->getParameter('brandfilepath'));
 
-        if (!file_exists($brandFilePath)) {
-            $response = ['status' => 'KO', 'message' => 'The brand file does not exist'];
-            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        if ($brands instanceof JsonResponse) {
+            return $brands;
         }
-
-        $jsonBrands = file_get_contents($brandFilePath);
-
-        $brands = json_decode($jsonBrands);
-        if (null === $brands) {
-            $response = ['status' => 'KO', 'message' => json_last_error_msg()];
-            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
-        }
-
         return new JsonResponse($brands);
     }
 
@@ -68,19 +58,21 @@ class DefaultController extends Controller
      */
     public function listOrdersAction(Request $request)
     {
-        $orderFilePath = $this->getParameter('orderfilepath');
-
-        if (!file_exists($orderFilePath)) {
-            $response = ['status' => 'KO', 'message' => 'The order file does not exist'];
-            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        $orders = $this->get('json_parser')->decode($this->getParameter('orderfilepath'));
+        if ($orders instanceof JsonResponse) {
+            return $orders;
         }
 
-        $jsonOrders = file_get_contents($orderFilePath);
+        foreach ($orders as $order) {
+            $modelJson = $this->forward('ApiBundle:Default:getModelById', ['modelId' => $order->model]);
 
-        $orders = json_decode($jsonOrders);
-        if (null === $orders) {
-            $response = ['status' => 'KO', 'message' => json_last_error_msg()];
-            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+            if (Response::HTTP_BAD_REQUEST == $modelJson->getStatusCode()) {
+                $response = ['status' => 'KO', 'message' => 'Error when retrieving orders'];
+                return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+            }
+
+            $modelContent = $modelJson->getContent();
+            $order->model = json_decode($modelContent);
         }
 
         return new JsonResponse($orders);
@@ -106,23 +98,23 @@ class DefaultController extends Controller
      */
     public function getModelByIdAction(Request $request, $modelId)
     {
-        $modelFilePath = $this->getParameter('modelfilepath');
-
-        if (!file_exists($modelFilePath)) {
-            $response = ['status' => 'KO', 'message' => 'The model file does not exist'];
-            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
-        }
-
-        $jsonModels = file_get_contents($modelFilePath);
-
-        $models = json_decode($jsonModels);
-        if (null === $models) {
-            $response = ['status' => 'KO', 'message' => json_last_error_msg()];
-            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        $models = $this->get('json_parser')->decode($this->getParameter('modelfilepath'));
+        if ($models instanceof JsonResponse) {
+            return $models;
         }
 
         foreach ($models as $model) {
             if ($modelId == $model->id) {
+                $brandJson = $this->forward('ApiBundle:Default:getBrandById', ['brandId' => $model->brand]);
+
+                if (Response::HTTP_BAD_REQUEST == $brandJson->getStatusCode()) {
+                    $response = ['status' => 'KO', 'message' => 'Error when retrieving the model'];
+                    return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+                }
+
+                $brandContent = $brandJson->getContent();
+                $model->brand = json_decode($brandContent);
+
                 return new JsonResponse($model);
             }
         }
@@ -151,19 +143,9 @@ class DefaultController extends Controller
      */
     public function getBrandByIdAction(Request $request, $brandId)
     {
-        $brandFilePath = $this->getParameter('brandfilepath');
-
-        if (!file_exists($brandFilePath)) {
-            $response = ['status' => 'KO', 'message' => 'The brand file does not exist'];
-            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
-        }
-
-        $jsonBrands = file_get_contents($brandFilePath);
-
-        $brands = json_decode($jsonBrands);
-        if (null === $brands) {
-            $response = ['status' => 'KO', 'message' => json_last_error_msg()];
-            return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        $brands = $this->get('json_parser')->decode($this->getParameter('brandfilepath'));
+        if ($brands instanceof JsonResponse) {
+            return $brands;
         }
 
         foreach ($brands as $brand) {
