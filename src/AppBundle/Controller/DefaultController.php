@@ -6,6 +6,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 /**
  * Main controller to list and create phone recovery
@@ -31,26 +36,18 @@ class DefaultController extends Controller
     {
         /** @var JsonResponse $ordersJson */
         $ordersJson = $this->forward('ApiBundle:Default:listOrders');
-        $ordersContent = $ordersJson->getContent();
-        $orders = json_decode($ordersContent);
+        $ordersContent = json_decode($ordersJson->getContent());
 
-        if (!is_array($orders) && property_exists($orders, 'status') && 'KO' == $orders->status) {
-            throw new \RuntimeException('Orders data file is bad or corrupted.');
+        if (Response::HTTP_BAD_REQUEST == $ordersJson->getStatusCode()) {
+            throw new \RuntimeException($ordersContent->message);
         }
 
-        foreach ($orders as &$order) {
-            /** @var JsonResponse $modelJson */
-            $modelJson = $this->forward('ApiBundle:Default:getModelById', ['modelId' => $order->model]);
-            $modelContent = $modelJson->getContent();
-            $model = json_decode($modelContent);
-            $order->model = $model->name;
+        $serializer = new Serializer(
+            [new GetSetMethodNormalizer(), new ArrayDenormalizer()],
+            [new JsonEncoder()]
+        );
 
-            /** @var JsonResponse $modelJson */
-            $brandJson = $this->forward('ApiBundle:Default:getBrandById', ['brandId' => $model->brand]);
-            $brandContent = $brandJson->getContent();
-            $brand = json_decode($brandContent);
-            $order->brand = $brand->name;
-        }
+        $orders = $serializer->deserialize($ordersJson->getContent(), 'ApiBundle\Entity\Order[]', 'json');
 
         return $this->render('default/list.html.twig', [
             'orders' => $orders

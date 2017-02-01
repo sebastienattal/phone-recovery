@@ -2,10 +2,21 @@
 
 {% block body %}
     <h1>{{ 'List phone recovery'|trans }}</h1>
+
+    {% set nbOrders = orders|length %}
+
+    <div class="alert {% if (0 == nbOrders) %}alert-warning{% else %}alert-info{% endif %}" role="alert">
+        {% transchoice nbOrders %}
+        {0} There is no order. You should firstly adding an order.|{1} There is %nbOrders% order.|]1,Inf[ There are %nbOrders% orders.
+        {% endtranschoice %}
+    </div>
+
     <button class="btn btn-default" type="button">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         {{ 'Add an order'|trans }}
     </button>
+
+    {% if nbOrders > 0 %}
     <p>
         <table class="table table-bordered table-striped">
             <thead>
@@ -21,13 +32,14 @@
             {% for order in orders %}
                 <tr>
                     <td>{{ order.id }}</td>
-                    <td>{{ order.model }}</td>
-                    <td>{{ order.brand }}</td>
+                    <td>{{ order.model.name }}</td>
+                    <td>{{ order.model.brand.name }}</td>
                     <td>{{ order.amount|number_format(2, '.', ',') }}
-                    <td>{{ order.created }}</td>
+                    <td>{{ order.created|date('m/d/Y H:i:s') }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </p>
+    {% endif %}
 {% endblock %}

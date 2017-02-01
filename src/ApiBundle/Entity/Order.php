@@ -7,6 +7,8 @@ namespace ApiBundle\Entity;
  */
 class Order
 {
+    const DATETIME_FORMAT = 'Y-m-d H:i:s';
+
     /**
      * @var integer
      */
@@ -108,12 +110,20 @@ class Order
     }
 
     /**
-     * @param \DateTime $created
+     * @param string $created
      * @return Order
+     * @throws InvalidArgumentException
      */
     public function setCreated($created)
     {
-        $this->created = $created;
+        if (false === \DateTime::createFromFormat(self::DATETIME_FORMAT, $created)) {
+            throw new \InvalidArgumentException(sprintf(
+                'The date "%s" must be formatted to "%s"',
+                $created, self::DATETIME_FORMAT
+            ));
+        }
+
+        $this->created = new \DateTime($created);
 
         return $this;
     }

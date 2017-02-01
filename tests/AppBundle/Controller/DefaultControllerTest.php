@@ -19,7 +19,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertContains('Welcome to Phone recovery!', $crawler->filter('body h1')->text());
     }
 
-    public function testListPhoneRecovery()
+    public function testDisplayOrdersList()
     {
         $client = static::createClient();
 

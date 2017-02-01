@@ -23,7 +23,7 @@ class OrderTest extends WebTestCase
             'price' => 78,
             'brand' => $brand
         ];
-        $dt = new \DateTime();
+        $dt = (new \DateTime)->format('Y-m-d H:i:s');
 
         $order = (new Order)
             ->setId(1)
@@ -34,7 +34,7 @@ class OrderTest extends WebTestCase
         $this->assertEquals(1, $order->getId());
         $this->assertEquals(35.20, $order->getAmount());
         $this->assertInstanceOf(\DateTime::class, $order->getCreated());
-        $this->assertEquals($dt, $order->getCreated());
+        $this->assertEquals(new \DateTime($dt), $order->getCreated());
 
         $expectedModel = (new Model)
             ->setBrand($model['brand'])
@@ -50,11 +50,25 @@ class OrderTest extends WebTestCase
     public function testOrderWithEmptyModelExpectedRuntimeException()
     {
         $model = [];
+        $dt = (new \DateTime)->format('Y-m-d H:i:s');
 
         $order = (new Order)
             ->setId(1)
             ->setAmount(35.20)
-            ->setCreated(new \DateTime())
+            ->setCreated($dt)
             ->setModel($model);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testOrderWithInvalidCreatedExpectedInvalidArgumentException()
+    {
+        $dt = (new \DateTime)->format('d/m/Y H:i:s');
+
+        $order = (new Order)
+            ->setId(1)
+            ->setAmount(35.20)
+            ->setCreated($dt);
     }
 }
