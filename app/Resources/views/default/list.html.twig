@@ -11,10 +11,12 @@
         {% endtranschoice %}
     </div>
 
-    <button class="btn btn-default" type="button">
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-        {{ 'Add an order'|trans }}
-    </button>
+    <a href="{{ url('add_phone_recovery') }}">
+        <button class="btn btn-default" type="button">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            {{ 'Add an order'|trans }}
+        </button>
+    </a>
 
     {% if nbOrders > 0 %}
     <p>

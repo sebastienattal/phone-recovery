@@ -21,6 +21,9 @@ class DefaultController extends Controller
      * Homepage
      *
      * @Route("/", name="homepage")
+     *
+     * @param Request $request
+     * @return Response
      */
     public function indexAction(Request $request)
     {
@@ -31,6 +34,9 @@ class DefaultController extends Controller
      * List all phone recovery
      *
      * @Route("/list", name="list_phone_recovery")
+     *
+     * @param Request $request
+     * @return Response
      */
     public function listAction(Request $request)
     {
@@ -51,6 +57,20 @@ class DefaultController extends Controller
 
         return $this->render('default/list.html.twig', [
             'orders' => $orders
+        ]);
+    }
+
+    /**
+     * Add a phone recovery
+     *
+     * @Route("/add", name="add_phone_recovery")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function addAction(Request $request)
+    {
+        return $this->render('default/add.html.twig', [
         ]);
     }
 }

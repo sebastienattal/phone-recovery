@@ -32,4 +32,13 @@ class DefaultControllerTest extends WebTestCase
         $this->assertContains('Amount', $crawler->filter('body table tr')->text());
         $this->assertContains('Creation date', $crawler->filter('body table tr')->text());
     }
+
+    public function testDisplayAddOrder()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/add');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
 }
