@@ -37,7 +37,7 @@
                     <td>{{ order.model.name }}</td>
                     <td>{{ order.model.brand.name }}</td>
                     <td>{{ order.amount|number_format(2, '.', ',') }}
-                    <td>{{ order.created|date('m/d/Y H:i:s') }}</td>
+                    <td>{{ order.created|date('d/m/Y H:i:s') }}</td>
                 </tr>
             {% endfor %}
             </tbody>
