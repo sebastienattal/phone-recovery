@@ -1,3 +1,8 @@
 services:
     json_parser:
         class: ApiBundle\Service\JsonParser
+    form.add_phone_recovery:
+        class: ApiBundle\Form\AddPhoneRecoveryType
+        arguments: ["@api_caller", "@router"]
+        tags:
+            - { name: form.type }

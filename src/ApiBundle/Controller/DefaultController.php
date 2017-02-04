@@ -2,6 +2,8 @@
 
 namespace ApiBundle\Controller;
 
+use ApiBundle\Entity\Order;
+use ApiBundle\Form\AddPhoneRecoveryType;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -189,7 +191,59 @@ class DefaultController extends Controller
             }
         }
 
-        $response = ['status' => 'KO', 'message' => 'The brand does not exist'];
-        return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        return new JsonResponse(['message' => 'The brand does not exist'], Response::HTTP_BAD_REQUEST);
+    }
+
+    /**
+     * Save an order
+     *
+     * @ApiDoc(
+     *     section="Phone recovery",
+     *     description="Save an order",
+     *     statusCodes={
+     *         Response::HTTP_OK="Returned when the order has been saved successfully",
+     *         Response::HTTP_BAD_REQUEST="Returned when an error occurred"
+     *     },
+     *     requirements={
+     *         {
+     *             "name"="model",
+     *             "dataType"="integer",
+     *             "requirement"="A valid id of model",
+     *             "description"="The model of the recovery to save"
+     *         },
+     *         {
+     *             "name"="amount",
+     *             "dataType"="float",
+     *             "requirement"="A valid positive amount",
+     *             "description"="The amount to recycle the phone"
+     *         }
+     *     }
+     * )
+     * @Route("/services/orders", name="api_services_save_order")
+     * @Method("POST")
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function saveOrderAction(Request $request)
+    {
+        $data = $request->request->all();
+        $errors = [];
+
+        $order = new Order();
+        $order->setCreated((new \DateTime)->format(Order::DATETIME_FORMAT));
+
+        $form = $this->createForm(AddPhoneRecoveryType::class, $order);
+        $form->submit($data);
+
+        if ($form->isSubmitted() && !$form->isValid()) {
+            foreach ($form->getErrors(true) as $error) {
+                $errors[$error->getOrigin()->getName()] = $error->getMessage();
+            }
+
+            return new JsonResponse($errors, Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->get('json_parser')->saveOrder($order, $this->getParameter('orderFilePath'));
     }
 }

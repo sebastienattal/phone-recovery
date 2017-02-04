@@ -2,4 +2,18 @@
 
 {% block body %}
     <h1>{{ 'Add a phone recovery'|trans }}</h1>
+
+    {% form_theme form 'bootstrap_3_layout.html.twig' %}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.model) }}
+    {{ form_row(form.amount) }}
+
+    <div class="form-group">
+        <button type="submit" class="btn-primary btn">{{ 'Save'|trans }}</button>
+        <a href="{{ url('list_phone_recovery') }}" class="btn btn-warning">{{ 'Cancel'|trans }}</a>
+    </div>
+
+    {{ form_end(form) }}
 {% endblock %}

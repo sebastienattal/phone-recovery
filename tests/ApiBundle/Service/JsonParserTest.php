@@ -2,6 +2,8 @@
 
 namespace ApiBundle\Tests\Service;
 
+use ApiBundle\Entity\Order;
+use ApiBundle\Service\JsonParser;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -49,5 +51,51 @@ class JsonParserTest extends WebTestCase
         $secondItem->name = 'Name 2';
 
         $this->assertEquals([$firstItem, $secondItem], $response);
+    }
+
+    public function testSaveOrder()
+    {
+        $client = static::createClient();
+        $filePath = $client->getKernel()->getRootDir() . '/../data/testOrderFile.json';
+
+        file_put_contents($filePath, '[]');
+
+        $brand = [
+            'id' => 1,
+            'name' => 'Brand test'
+        ];
+        $model = [
+            'id' => 1,
+            'name' => 'Model test',
+            'price' => 78,
+            'brand' => $brand
+        ];
+        $dt = (new \DateTime)->format('Y-m-d H:i:s');
+
+        $order = (new Order)
+            ->setId(1)
+            ->setAmount(35.20)
+            ->setCreated($dt)
+            ->setModel($model);
+
+        $jsonParser = $this
+            ->getMockBuilder(JsonParser::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['decode'])
+            ->getMock();
+
+        $jsonParser
+            ->expects($this->once())
+            ->method('decode')
+            ->will($this->returnValue([]));
+
+        $response = $jsonParser->saveOrder($order, $filePath);
+        $jsonResponse = json_decode($response->getContent());
+
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals('The order has been successfully created!', $jsonResponse->message);
+        $this->assertContains('"id":1,"model":1,"amount":35.2', file_get_contents($filePath));
+
+        file_put_contents($filePath, '[]');
     }
 }

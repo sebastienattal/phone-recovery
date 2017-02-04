@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use ApiBundle\Form\AddPhoneRecoveryType;
+use ApiBundle\Entity\Order;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -70,7 +72,31 @@ class DefaultController extends Controller
      */
     public function addAction(Request $request)
     {
+        $order = new Order();
+        $order->setCreated((new \DateTime)->format(Order::DATETIME_FORMAT));
+
+        $form = $this->createForm(AddPhoneRecoveryType::class, $order);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $jsonResponse = $this->get('json_parser')->saveOrder($order, $this->getParameter('orderFilePath'));
+                $response = json_decode($jsonResponse->getContent());
+
+                if ($jsonResponse->getStatusCode() == Response::HTTP_CREATED) {
+                    $this->addFlash('success', $response->message);
+                } else {
+                    $this->addFlash('error', $response->message);
+                }
+            } catch (\InvalidArgumentException $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+
+            return $this->redirectToRoute('list_phone_recovery');
+        }
+
         return $this->render('default/add.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 }

@@ -88,4 +88,22 @@ class DefaultControllerTest extends WebTestCase
         $response = $client->getResponse();
         $this->assertEquals(404, $response->getStatusCode());
     }
+
+    public function testSaveOrderWithoutParameters()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('POST', '/services/orders', []);
+
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    }
+
+    public function testSaveOrderWithInvalidParameters()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('POST', '/services/orders', ['model' => 12, 'amount' => 'invalidAmount']);
+
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+    }
 }
