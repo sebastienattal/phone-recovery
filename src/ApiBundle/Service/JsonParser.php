@@ -19,7 +19,7 @@ class JsonParser
     public function decode($filePath)
     {
         if (!file_exists($filePath)) {
-            $response = ['status' => 'KO', 'message' => sprintf('The file path "%s" does not exist', $filePath)];
+            $response = ['message' => sprintf('The file path "%s" does not exist', $filePath)];
             return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
         }
 

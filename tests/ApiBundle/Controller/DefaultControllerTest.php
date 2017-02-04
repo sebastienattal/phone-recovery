@@ -5,7 +5,7 @@ namespace ApiBundle\Tests\Controller;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
- * Unit tests for the Api Bundle
+ * Unit tests for main controller of the Api Bundle
  */
 class DefaultControllerTest extends WebTestCase
 {
@@ -33,7 +33,19 @@ class DefaultControllerTest extends WebTestCase
         $this->assertNotEmpty($response->getContent());
     }
 
-    public function testGetModelByIdReturnsGoodResponse()
+    public function testListAllModels()
+    {
+        $client = static::createClient();
+
+        $crawler = $client->request('GET', '/services/models');
+
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->headers->get('Content-Type'));
+        $this->assertNotEmpty($response->getContent());
+    }
+
+    public function testGetModelByIdReturns200()
     {
         $client = static::createClient();
 
@@ -45,7 +57,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertNotEmpty($response->getContent());
     }
 
-    public function testGetModelByIdReturnsBadResponse()
+    public function testGetModelByIdReturns404()
     {
         $client = static::createClient();
 
@@ -55,7 +67,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    public function testGetBrandByIdReturnsGoodResponse()
+    public function testGetBrandByIdReturns200()
     {
         $client = static::createClient();
 
@@ -67,7 +79,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertNotEmpty($response->getContent());
     }
 
-    public function testGetBrandByIdReturnsBadResponse()
+    public function testGetBrandByIdReturns404()
     {
         $client = static::createClient();
 

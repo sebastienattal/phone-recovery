@@ -40,6 +40,44 @@ class DefaultController extends Controller
     }
 
     /**
+     * List all models
+     *
+     * @ApiDoc(
+     *     section="Phone recovery",
+     *     description="List all models",
+     *     statusCodes={
+     *         Response::HTTP_OK="Returned when models exists",
+     *         Response::HTTP_BAD_REQUEST="Returned when an error occurred"
+     *     }
+     * )
+     * @Route("/services/models", name="api_services_list_models")
+     * @Method("GET")
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function listModelsAction(Request $request)
+    {
+        $models = $this->get('json_parser')->decode($this->getParameter('modelFilePath'));
+
+        if ($models instanceof JsonResponse) {
+            return $models;
+        }
+
+        foreach ($models as $model) {
+            $brandJson = $this->forward('ApiBundle:Default:getBrandById', ['brandId' => $model->brand]);
+
+            if (Response::HTTP_BAD_REQUEST == $brandJson->getStatusCode()) {
+                return new JsonResponse(['message' => 'Error when retrieving brands'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $brandContent = $brandJson->getContent();
+            $model->brand = json_decode($brandContent);
+        }
+        return new JsonResponse($models);
+    }
+
+    /**
      * List all orders
      *
      * @ApiDoc(
@@ -67,8 +105,7 @@ class DefaultController extends Controller
             $modelJson = $this->forward('ApiBundle:Default:getModelById', ['modelId' => $order->model]);
 
             if (Response::HTTP_BAD_REQUEST == $modelJson->getStatusCode()) {
-                $response = ['status' => 'KO', 'message' => 'Error when retrieving orders'];
-                return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+                return new JsonResponse(['message' => 'Error when retrieving orders'], Response::HTTP_BAD_REQUEST);
             }
 
             $modelContent = $modelJson->getContent();
@@ -108,8 +145,7 @@ class DefaultController extends Controller
                 $brandJson = $this->forward('ApiBundle:Default:getBrandById', ['brandId' => $model->brand]);
 
                 if (Response::HTTP_BAD_REQUEST == $brandJson->getStatusCode()) {
-                    $response = ['status' => 'KO', 'message' => 'Error when retrieving the model'];
-                    return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+                    return new JsonResponse(['message' => 'Error when retrieving the model'], Response::HTTP_BAD_REQUEST);
                 }
 
                 $brandContent = $brandJson->getContent();
@@ -119,8 +155,7 @@ class DefaultController extends Controller
             }
         }
 
-        $response = ['status' => 'KO', 'message' => 'The model does not exist'];
-        return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
+        return new JsonResponse(['message' => 'The model does not exist'], Response::HTTP_BAD_REQUEST);
     }
 
     /**

@@ -21,14 +21,14 @@ class JsonParserTest extends WebTestCase
         $this->assertEquals(400, $response->getStatusCode());
     }
 
-    public function testDecodeWrongFormatingJsonFile()
+    public function testDecodeWrongFormattedJsonFile()
     {
         $client = static::createClient();
         $filePath = $client->getKernel()->getRootDir() . '/../data/testInvalidFile.json';
 
         $response = $client->getContainer()->get('json_parser')->decode($filePath);
 
-        $expectedData = ['status' => 'KO', 'message' => 'Control character error, possibly incorrectly encoded'];
+        $expectedData = ['message' => 'Control character error, possibly incorrectly encoded'];
         $expectedResponse = new JsonResponse($expectedData, 400);
 
         $this->assertEquals($expectedResponse, $response);
