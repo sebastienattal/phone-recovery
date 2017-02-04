@@ -72,3 +72,11 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+nelmio_api_doc:
+    sandbox:
+        body_format:
+            formats: [form]
+        request_format:
+            formats:
+                json: application/json
