@@ -8,6 +8,7 @@
     {{ form_errors(form) }}
 
     {{ form_row(form.model) }}
+    <p id="selected-device-estimation"></p>
     {{ form_row(form.amount) }}
 
     <div class="form-group">
@@ -16,4 +17,25 @@
     </div>
 
     {{ form_end(form) }}
+
+    <script>
+        var formName = '{{ form.vars.name }}';
+
+        // Indicate the estimation of the selected device (the factory price)
+        var setDeviceEstimation = function() {
+            var estimation = $('#' + formName + '_model option:selected').data('modelEstimation');
+            if (estimation) {
+                $('#selected-device-estimation').html('<em>This model is estimated to <strong>' + estimation + '€</strong>.</em>');
+            } else {
+                $('#selected-device-estimation').html('');
+            }
+        };
+
+        $(function() {
+            setDeviceEstimation();
+            $('#' + formName + '_model').change(function() {
+                setDeviceEstimation();
+            });
+        });
+    </script>
 {% endblock %}

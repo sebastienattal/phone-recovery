@@ -65,7 +65,10 @@ class AddPhoneRecoveryType extends AbstractType
                 'choices' => $models,
                 'choice_label' => 'name',
                 'choice_value' => 'id',
-                'constraints' => [new NotBlank()]
+                'constraints' => [new NotBlank()],
+                'choice_attr' => function(Model $model, $key, $index) {
+                    return ['data-model-estimation' => $model->getPrice()];
+                },
             ])
             ->add('amount', NumberType::class, [
                 'attr' => ['placeholder' => 'Choose an amount'],
