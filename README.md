@@ -1,6 +1,6 @@
 # Phone Recovery
 The aim of this project is to provide a REST API in order to create and to consult phone recovery.
-Prices are fixed according to the model of the device.
+Prices are fixed according to the model of devices.
 Data will be found in JSON files.
 This project also provide a small application to list and create phone recovery.
 
@@ -31,7 +31,7 @@ server {
         }
 }
 ```
-Then, clone the project on your web directory and give some authorizations:
+Then, clone the project and from your web directory, give the following authorizations:
 ```shell
 setfacl -R -m u:www-data:rwx -m u:`whoami`:rwx var/cache var/logs var/sessions
 setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx var/cache var/logs var/sessions
@@ -43,13 +43,13 @@ Finally, run this command to deploy the application in dev :
 ```
 The first time, composer will install all required packages. At the end, press just "enter" each time to keep all default parameters.
 
-You can also have a prod simulation by running :
+You can also have a full simulation of the prod deployment by running :
 ```shell
 ./deploy_prod.sh
 ```
 ### URLs
-- The main application : http://phone-recovery.localhost/app_dev.php in dev, http://phone-recovery.localhost/app.php in prod
-- An api doc expose all services and provide sandboxes: http://phone-recovery.localhost/app_dev.php/services/doc in dev, http://phone-recovery.localhost/app.php/services/doc in prod.
+- Main application: http://phone-recovery.localhost/app_dev.php in dev, http://phone-recovery.localhost/app.php in prod
+- Api doc: http://phone-recovery.localhost/app_dev.php/services/doc in dev, http://phone-recovery.localhost/app.php/services/doc in prod
 
 ### Testing
 Run this command to execute unit and functional tests, with generated code coverage:
