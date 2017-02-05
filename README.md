@@ -5,7 +5,7 @@ Data will be found in JSON files.
 This project also provide a small application to list and create phone recovery.
 
 ### Architecture
-This app is based on Symfony 3. The API will be located in a separate bundle (ApiBundle). The external bundle [NelmioApiDocBundle](https://github.com/nelmio/NelmioApiDocBundle) is used to generate an api doc.
+This app is based on Symfony 3. The API will be located in a separated bundle (ApiBundle). The external bundle [NelmioApiDocBundle](https://github.com/nelmio/NelmioApiDocBundle) is used to generate an api doc.
 
 ### Prerequisite packages
 Need to install the following packages : `php-curl` for external API calls, `php-mbstring` and `php-xdebug` for phpunit.
@@ -31,10 +31,11 @@ server {
         }
 }
 ```
-Then, clone the project on your web directory and give permissions on cache, log and sessions directories:
+Then, clone the project on your web directory and give some authorizations:
 ```shell
 setfacl -R -m u:www-data:rwx -m u:`whoami`:rwx var/cache var/logs var/sessions
 setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx var/cache var/logs var/sessions
+chmod o+w data/order.json
 ```
 Finally, run this command to deploy the application in dev :
 ```shell
