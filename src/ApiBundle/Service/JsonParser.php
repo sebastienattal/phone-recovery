@@ -58,7 +58,7 @@ class JsonParser
 
         $jsonData[] = $jsonOrder;
 
-        if (false === file_put_contents($filePath, json_encode($jsonData))) {
+        if (!is_writable($filePath) || false === file_put_contents($filePath, json_encode($jsonData))) {
             throw new \InvalidArgumentException('An error occurred when writing the order JSON file.');
         }
 
