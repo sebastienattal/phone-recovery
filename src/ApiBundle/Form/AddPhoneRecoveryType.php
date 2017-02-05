@@ -61,6 +61,7 @@ class AddPhoneRecoveryType extends AbstractType
 
         $builder
             ->add('model', ChoiceType::class, [
+                'label' => 'Model',
                 'placeholder' => 'Choose a model',
                 'choices' => $models,
                 'choice_label' => 'name',
@@ -71,7 +72,8 @@ class AddPhoneRecoveryType extends AbstractType
                 },
             ])
             ->add('amount', NumberType::class, [
-                'attr' => ['placeholder' => 'Choose an amount'],
+                'label' => 'Amount (€)',
+                'attr' => ['placeholder' => 'The amount of the redemption'],
                 'constraints' => [new NotBlank(), new GreaterThan(['value' => 0])]
             ]);
 
