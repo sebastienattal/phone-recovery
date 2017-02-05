@@ -86,10 +86,10 @@ class DefaultController extends Controller
                 if ($jsonResponse->getStatusCode() == Response::HTTP_CREATED) {
                     $this->addFlash('success', $response->message);
                 } else {
-                    $this->addFlash('error', $response->message);
+                    $this->addFlash('danger', $response->message);
                 }
             } catch (\InvalidArgumentException $e) {
-                $this->addFlash('error', $e->getMessage());
+                $this->addFlash('danger', $e->getMessage());
             }
 
             return $this->redirectToRoute('list_phone_recovery');
